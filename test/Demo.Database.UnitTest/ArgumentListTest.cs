@@ -4,7 +4,7 @@ using Xunit;
 namespace Demo.Database.UnitTest;
 public class ArgumentListTest
 {
-	[Theory(DisplayName = "ArgumentList.IsHelCommand Returns True/False correctly based on arguments")]
+	[Theory(DisplayName = "ArgumentList.IsHelpCommand Returns True/False correctly based on arguments")]
 	[InlineData(false,new string[]{""})]
 	[InlineData(false,new string[]{"  "})]
 	[InlineData(false,new string[]{"", "  "})]
