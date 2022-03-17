@@ -12,6 +12,8 @@ public class MigrationOptionsTest
 	[InlineData(false,new string[]{"-help"})]
 	[InlineData(false,new string[]{"?h"})]
 	[InlineData(false,new string[]{"?help"})]
+	[InlineData(false,new string[]{"--?"})]
+	[InlineData(false,new string[]{"--h"})]
 	[InlineData(true,new string[]{"-h"})]
 	[InlineData(true,new string[]{"-H"})]
 	[InlineData(true,new string[]{"--help"})]
@@ -25,8 +27,6 @@ public class MigrationOptionsTest
 	[InlineData(true,new string[]{"otherflag", "--HELP"})]
 	[InlineData(true,new string[]{"-?"})]
 	[InlineData(true,new string[]{"otherflag", "-?"})]
-	[InlineData(false,new string[]{"--?"})]
-	[InlineData(false,new string[]{"--h"})]
 	public void MigrationOptions_IsHelpOption_Returns_CorrectValue(bool expected, string[] args)
 	{
 		var sut = MigrationOptions.IsHelpOption(args);

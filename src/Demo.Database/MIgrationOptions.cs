@@ -1,8 +1,10 @@
+using Microsoft.Extensions.Configuration;
+
 namespace Demo.Database;
 
 public static class MigrationOptions
 {
-	private static Dictionary<string, string> _validOptions = new Dictionary<string, string>
+	public static IReadOnlyDictionary<string, string> ValidOptions = new Dictionary<string, string>
 	{
 		{"-h", "Show command line help."},
 		{"--help", "Show command line help."},
@@ -15,29 +17,80 @@ public static class MigrationOptions
 		{"--all", "Run all scripts (migrate, idempotent, dataload)."}
 	};
 
-	public static void DisplayHelp()
+	public static (Configuration Configuration, List<string> Errors) BuildConfiguration(string[] arguments, IConfigurationRoot config)
 	{
-		// Flip Key and Value to group aliases together based on Value aka Description
-		var output = _validOptions.GroupBy(x => x.Value)
-			.ToDictionary(x => x.Key, x => x.Select(i => i.Key).ToList());
+		bool help = false;
+		bool sql = false;
+		bool psql = false;
+		bool migrate = false;
+		bool idempotent = false;
+		bool dataload = false;
+		DatabaseServerType dbType = DatabaseServerType.SqlServer;
+		string connectionString = "";
+		List<string> errors = new();
 
-		Console.WriteLine("\r\nDescripton:\r\n   Run Scripts to update Demo Database.\r\n\r\nOptions:");
-		foreach (var kvp in output)
+		for (var index = 1; index < arguments.Length; index++)
 		{
-			Console.WriteLine($"{kvp.Value.Aggregate((x, y) => $"{x}, {y}"),-20}{kvp.Key}");
+			switch (arguments[index].ToLower())
+			{
+				case "-h":
+				case "-?":
+				case "--help":
+					help = true;
+					break;
+				case "--sql":
+					sql = true;
+					dbType = DatabaseServerType.SqlServer;
+					break;
+				case "--psql":
+					psql = true;
+					dbType = DatabaseServerType.PostgreSQL;
+					break;
+				case "--migrate":
+					migrate = true;
+					break;
+				case "--idempotent":
+					idempotent = true;
+					break;
+				case "--dataload":
+					dataload = true;
+					break;
+				case "--all":
+					migrate = true;
+					idempotent = true;
+					dataload = true;
+					break;
+				default:
+					errors.Add($"{arguments[index]} is not a valid option.");
+					break;
+			}
 		}
-	}
-
-	public static bool IsHelpOption(string[] args)
-	{
-		if (args.Any(a => a.Equals("-h", StringComparison.InvariantCultureIgnoreCase)
-			|| a.Equals("--help", StringComparison.InvariantCultureIgnoreCase)
-			|| a.Equals("-?")))
+		if (!help)
 		{
-			return true;
+			switch ((sql, psql))
+			{
+				case (true, true):
+					errors.Add("Only 1 Database type can be migrated at at time.  Choose --sql or --psql");
+					break;
+				case (false, false):
+					errors.Add("A Database type is required.  Choose --sql or --psql");
+					break;
+				case (true, false):
+					connectionString = config.GetConnectionString("SqlServer");
+					break;
+				case (false, true):
+					connectionString = config.GetConnectionString("PostgreSQL`");
+					break;
+			}
+			if (string.IsNullOrEmpty(connectionString))
+			{
+				errors.Add("ConnectionString missing, please add to User Secrets.");
+			}
 		}
+		var database = new Database(dbType, connectionString);
+		var configuration = new Configuration(database, help, migrate, idempotent, dataload);
+		return (configuration, errors);
 
-		return false;
 	}
 }
 
