@@ -26,6 +26,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{13E4
 		.vscode\tasks.json = .vscode\tasks.json
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{229951F8-B605-4D30-9A1F-902FBF972B34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Database.UnitTest", "test\Demo.Database.UnitTest\Demo.Database.UnitTest.csproj", "{9748B46B-C634-444D-A93D-0C73D8A061D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,12 +40,17 @@ Global
 		{A50EA4A6-C0AF-448A-88B9-619922D279C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A50EA4A6-C0AF-448A-88B9-619922D279C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A50EA4A6-C0AF-448A-88B9-619922D279C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9748B46B-C634-444D-A93D-0C73D8A061D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9748B46B-C634-444D-A93D-0C73D8A061D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9748B46B-C634-444D-A93D-0C73D8A061D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9748B46B-C634-444D-A93D-0C73D8A061D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A50EA4A6-C0AF-448A-88B9-619922D279C1} = {0A014388-870E-4F8F-A8B7-11B74E47EC90}
+		{9748B46B-C634-444D-A93D-0C73D8A061D4} = {229951F8-B605-4D30-9A1F-902FBF972B34}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B277519A-364B-4E11-A201-1D9D75759BA1}
