@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
-using Demo.Database;
+﻿using Demo.Database;
+using Microsoft.Extensions.Configuration;
 
 var arguments = Environment.GetCommandLineArgs();
 var configuration = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
-var (migrationConfig, errors) = MigrationOptions.BuildConfiguration(arguments, configuration);
 
-if(errors.Any())
-	return Output.DisplayConfigErrors(errors);
+var migrationOptions = MigrationOptions.BuildConfiguration(arguments, configuration);
 
-if(migrationConfig.Help)
-	return Output.DisplayHelp();
-
-return 0;
+return migrationOptions switch
+{
+	(null, var errors) => Output.DisplayConfigErrors(errors),
+	var (migrationConfig, _) when migrationConfig.Help => Output.DisplayHelp(),
+	_ => -1
+};

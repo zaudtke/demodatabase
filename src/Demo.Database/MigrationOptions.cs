@@ -1,33 +1,42 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace Demo.Database;
 
 public static class MigrationOptions
 {
-	public static IReadOnlyDictionary<string, string> ValidOptions = new Dictionary<string, string>
+	public static readonly IReadOnlyDictionary<string, string> ValidOptions = new Dictionary<string, string>
 	{
 		{"-h", "Show command line help."},
 		{"--help", "Show command line help."},
 		{"-?", "Show command line help."},
-		{"--sql", "Run the migrations against Sql Seerver."},
+		{"--sql", "Run the migrations against Sql Server."},
 		{"--psql", "Run the migrations against PostgreSQL."},
-		{"--migrate", "Run migratoin scripts."},
+		{"--migrate", "Run migration scripts."},
 		{"--idempotent", "Run idempotent scripts."},
 		{"--dataload", "Run data load scripts."},
-		{"--all", "Run all scripts (migrate, idempotent, dataload)."}
+		{"--all", "Run all scripts (migrate, idempotent, dataload)."},
+		{"--drop", "Drop Demo Database."}
 	};
 
-	public static (Configuration Configuration, List<string> Errors) BuildConfiguration(string[] arguments, IConfigurationRoot config)
+	public static (Configuration? Configuration, List<string> Errors) BuildConfiguration(string[] arguments, IConfigurationRoot config)
 	{
-		bool help = false;
-		bool sql = false;
-		bool psql = false;
-		bool migrate = false;
-		bool idempotent = false;
-		bool dataload = false;
-		DatabaseServerType dbType = DatabaseServerType.SqlServer;
-		string connectionString = "";
-		List<string> errors = new();
+		var help = false;
+		var sql = false;
+		var psql = false;
+		var migrate = false;
+		var idempotent = false;
+		var dataload = false;
+		var drop = false;
+		var dbType = DatabaseServerType.SqlServer;
+		var connectionString = "";
+		var errors = new List<string>();
+
+		var argCount = arguments.Length;
+		if (argCount <= 1)
+		{
+			// Argument 0 is the Executing App when using Top Level Statements
+			help = true;
+		}
 
 		for (var index = 1; index < arguments.Length; index++)
 		{
@@ -44,7 +53,7 @@ public static class MigrationOptions
 					break;
 				case "--psql":
 					psql = true;
-					dbType = DatabaseServerType.PostgreSQL;
+					dbType = DatabaseServerType.Postgres;
 					break;
 				case "--migrate":
 					migrate = true;
@@ -60,6 +69,9 @@ public static class MigrationOptions
 					idempotent = true;
 					dataload = true;
 					break;
+				case "--drop":
+					drop = true;
+					break;
 				default:
 					errors.Add($"{arguments[index]} is not a valid option.");
 					break;
@@ -67,30 +79,43 @@ public static class MigrationOptions
 		}
 		if (!help)
 		{
-			switch ((sql, psql))
+			switch (sql, psql)
 			{
 				case (true, true):
-					errors.Add("Only 1 Database type can be migrated at at time.  Choose --sql or --psql");
+					errors.Add("Only 1 Database type can be migrated at at time.  Choose --sql or --psql.");
+					connectionString = "<NotAbleToSet>";
 					break;
 				case (false, false):
-					errors.Add("A Database type is required.  Choose --sql or --psql");
+					errors.Add("A Database type is required.  Choose --sql or --psql.");
+					connectionString = "<NotAbleToSet>";
 					break;
 				case (true, false):
 					connectionString = config.GetConnectionString("SqlServer");
+					if (string.IsNullOrEmpty(connectionString))
+						errors.Add("ConnectionStrings:SqlServer missing, please add to User Secrets.");
 					break;
 				case (false, true):
-					connectionString = config.GetConnectionString("PostgreSQL`");
+					connectionString = config.GetConnectionString("PostgreSQL");
+					if (string.IsNullOrEmpty(connectionString))
+						errors.Add("ConnectionStrings:PostgreSQL missing, please add to User Secrets.");
 					break;
 			}
-			if (string.IsNullOrEmpty(connectionString))
-			{
-				errors.Add("ConnectionString missing, please add to User Secrets.");
-			}
 		}
-		var database = new Database(dbType, connectionString);
-		var configuration = new Configuration(database, help, migrate, idempotent, dataload);
-		return (configuration, errors);
 
+		if (drop && (migrate || idempotent || dataload))
+		{
+			errors.Add("--drop can not be run with other options.");
+		}
+
+		if (errors.Any())
+		{
+			return (null, errors);
+		}
+
+		var database = new Database(dbType, connectionString);
+		var configuration = new Configuration(database, help, migrate, idempotent, dataload, drop);
+
+		return (configuration, errors); // errors will be empty list
 	}
 }
 
