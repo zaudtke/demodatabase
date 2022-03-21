@@ -27,4 +27,9 @@ public static class Output
 		Console.WriteLine();
 		return -1;
 	}
+
+	public static void Display(string message)
+	{
+		Console.WriteLine(message);
+	}
 }
