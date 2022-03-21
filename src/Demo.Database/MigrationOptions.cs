@@ -15,7 +15,6 @@ public static class MigrationOptions
 		{"--idempotent", "Run idempotent scripts."},
 		{"--dataload", "Run data load scripts."},
 		{"--all", "Run all scripts (migrate, idempotent, dataload)."},
-		{"--drop", "Drop Demo Database."}
 	};
 
 	public static (Configuration? Configuration, List<string> Errors) BuildConfiguration(string[] arguments, IConfigurationRoot config)
@@ -26,7 +25,6 @@ public static class MigrationOptions
 		var migrate = false;
 		var idempotent = false;
 		var dataload = false;
-		var drop = false;
 		var dbType = DatabaseServerType.SqlServer;
 		var connectionString = "";
 		var errors = new List<string>();
@@ -69,9 +67,6 @@ public static class MigrationOptions
 					idempotent = true;
 					dataload = true;
 					break;
-				case "--drop":
-					drop = true;
-					break;
 				default:
 					errors.Add($"{arguments[index]} is not a valid option.");
 					break;
@@ -102,18 +97,13 @@ public static class MigrationOptions
 			}
 		}
 
-		if (drop && (migrate || idempotent || dataload))
-		{
-			errors.Add("--drop can not be run with other options.");
-		}
-
 		if (errors.Any())
 		{
 			return (null, errors);
 		}
 
 		var database = new Database(dbType, connectionString);
-		var configuration = new Configuration(database, help, migrate, idempotent, dataload, drop);
+		var configuration = new Configuration(database, help, migrate, idempotent, dataload);
 
 		return (configuration, errors); // errors will be empty list
 	}
