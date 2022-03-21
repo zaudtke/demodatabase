@@ -10,5 +10,5 @@ return migrationOptions switch
 {
 	(null, var errors) => Output.DisplayConfigErrors(errors),
 	var (migrationConfig, _) when migrationConfig.Help => Output.DisplayHelp(),
-	var (migrationConfig, _) => Migration.Build(migrationConfig).Run()
+	var (migrationConfig, _) => Deployment.Build(migrationConfig).Run()
 };
