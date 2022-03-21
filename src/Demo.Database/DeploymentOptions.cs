@@ -90,9 +90,9 @@ public static class DeploymentOptions
 						errors.Add("ConnectionStrings:SqlServer missing, please add to User Secrets.");
 					break;
 				case (false, true):
-					connectionString = config.GetConnectionString("PostgreSQL");
+					connectionString = config.GetConnectionString("Postgres");
 					if (string.IsNullOrEmpty(connectionString))
-						errors.Add("ConnectionStrings:PostgreSQL missing, please add to User Secrets.");
+						errors.Add("ConnectionStrings:Postgres missing, please add to User Secrets.");
 					break;
 			}
 		}

@@ -1,8 +1,4 @@
-﻿using DbUp;
-using DbUp.Helpers;
-
-namespace Demo.Database;
-
+﻿namespace Demo.Database;
 
 public interface IDeployment
 {

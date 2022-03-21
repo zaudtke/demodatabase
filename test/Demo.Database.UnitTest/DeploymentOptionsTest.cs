@@ -4,15 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace Demo.Database.UnitTest;
-public class MigrationOptionsTest
+public class DeploymentOptionsTest
 {
 	[Theory(DisplayName = "DeploymentOptions.BuildConfiguration Returns Error List correctly based on invalid arguments")]
 	[InlineData(true, new string[] { "app.dll", "--sql", "--psql" }, new string[] { "Only 1 Database type can be deployed at at time.  Choose --sql or --psql." })]
 	[InlineData(true, new string[] { "app.dll", "--migrate" }, new string[] { "A Database type is required.  Choose --sql or --psql." })]
 	[InlineData(false, new string[] { "app.dll", "--sql" }, new string[] { "ConnectionStrings:SqlServer missing, please add to User Secrets." })]
-	[InlineData(false, new string[] { "app.dll", "--psql" }, new string[] { "ConnectionStrings:PostgreSQL missing, please add to User Secrets." })]
+	[InlineData(false, new string[] { "app.dll", "--psql" }, new string[] { "ConnectionStrings:Postgres missing, please add to User Secrets." })]
 	[InlineData(true, new string[] { "app.dll", "--psql", "--migrate", "--invalid", "--teardown" }, new string[] { "--invalid is not a valid option.", "--teardown is not a valid option." })]
-	public void MigrationOptions_BuildConfiguration_Returns_ListOfErrors_When_Invalid_Arguments_Passed_In(bool includeConnections, string[] args, string[] expected)
+	public void DeploymentOptions_BuildConfiguration_Returns_ListOfErrors_When_Invalid_Arguments_Passed_In(bool includeConnections, string[] args, string[] expected)
 	{
 		var configRoot = GivenConfigurationRoot(includeConnections, includeConnections);
 		var (config, errors) = DeploymentOptions.BuildConfiguration(args, configRoot);
@@ -34,7 +34,7 @@ public class MigrationOptionsTest
 	[InlineData("executing/path/app.dll", "--heLP")]
 	[InlineData("executing/path/app.dll", "--help", "--migrate")]
 	[InlineData("executing/path/app.dll", "--migrate", "--help")]
-	public void MigrationOptions_BuildConfiguration_Returns_ValidConfiguration_With_Help_True_When_Valid_HelpOption(params string[] args)
+	public void DeploymentOptions_BuildConfiguration_Returns_ValidConfiguration_With_Help_True_When_Valid_HelpOption(params string[] args)
 	{
 		var configRoot = GivenConfigurationRoot(false, false);
 		var (config, errors) = DeploymentOptions.BuildConfiguration(args, configRoot);
@@ -46,15 +46,15 @@ public class MigrationOptionsTest
 	}
 
 	[Theory(DisplayName = "DeploymentOptions.BuildConfiguration Returns valid configuration")]
-	[InlineData(new string[] { "app.dll", "--psql" }, 0, "PostgreSQLConnectionString", false, false, false)]
-	[InlineData(new string[] { "app.dll", "--psql", "--migrate" }, 0, "PostgreSQLConnectionString", true, false, false)]
-	[InlineData(new string[] { "app.dll", "--psql", "--idempotent" }, 0, "PostgreSQLConnectionString", false, true, false)]
-	[InlineData(new string[] { "app.dll", "--psql", "--dataload" }, 0, "PostgreSQLConnectionString", false, false, true)]
-	[InlineData(new string[] { "app.dll", "--psql", "--migrate", "--idempotent" }, 0, "PostgreSQLConnectionString", true, true, false)]
-	[InlineData(new string[] { "app.dll", "--psql", "--migrate", "--dataload" }, 0, "PostgreSQLConnectionString", true, false, true)]
-	[InlineData(new string[] { "app.dll", "--psql", "--idempotent", "--dataload" }, 0, "PostgreSQLConnectionString", false, true, true)]
-	[InlineData(new string[] { "app.dll", "--psql", "--migrate", "--idempotent", "--dataload" }, 0, "PostgreSQLConnectionString", true, true, true)]
-	[InlineData(new string[] { "app.dll", "--psql", "--all" }, 0, "PostgreSQLConnectionString", true, true, true)]
+	[InlineData(new string[] { "app.dll", "--psql" }, 0, "PostgresConnectionString", false, false, false)]
+	[InlineData(new string[] { "app.dll", "--psql", "--migrate" }, 0, "PostgresConnectionString", true, false, false)]
+	[InlineData(new string[] { "app.dll", "--psql", "--idempotent" }, 0, "PostgresConnectionString", false, true, false)]
+	[InlineData(new string[] { "app.dll", "--psql", "--dataload" }, 0, "PostgresConnectionString", false, false, true)]
+	[InlineData(new string[] { "app.dll", "--psql", "--migrate", "--idempotent" }, 0, "PostgresConnectionString", true, true, false)]
+	[InlineData(new string[] { "app.dll", "--psql", "--migrate", "--dataload" }, 0, "PostgresConnectionString", true, false, true)]
+	[InlineData(new string[] { "app.dll", "--psql", "--idempotent", "--dataload" }, 0, "PostgresConnectionString", false, true, true)]
+	[InlineData(new string[] { "app.dll", "--psql", "--migrate", "--idempotent", "--dataload" }, 0, "PostgresConnectionString", true, true, true)]
+	[InlineData(new string[] { "app.dll", "--psql", "--all" }, 0, "PostgresConnectionString", true, true, true)]
 	[InlineData(new string[] { "app.dll", "--sql" }, 1, "SqlConnectionString", false, false, false)]
 	[InlineData(new string[] { "app.dll", "--sql", "--migrate" }, 1, "SqlConnectionString", true, false, false)]
 	[InlineData(new string[] { "app.dll", "--sql", "--idempotent" }, 1, "SqlConnectionString", false, true, false)]
@@ -64,7 +64,7 @@ public class MigrationOptionsTest
 	[InlineData(new string[] { "app.dll", "--sql", "--idempotent", "--dataload" }, 1, "SqlConnectionString", false, true, true)]
 	[InlineData(new string[] { "app.dll", "--sql", "--migrate", "--idempotent", "--dataload" }, 1, "SqlConnectionString", true, true, true)]
 	[InlineData(new string[] { "app.dll", "--sql", "--all" }, 1, "SqlConnectionString", true, true, true)]
-	public void MigrationOptions_BuildConfiguration_Succeeds(string[] args, int expectedDbType, string expectedConnectionString, bool expectedRunMigrations, bool expectedRunIdempotent, bool expectedRunDataload)
+	public void DeploymentOptions_BuildConfiguration_Succeeds(string[] args, int expectedDbType, string expectedConnectionString, bool expectedRunMigrations, bool expectedRunIdempotent, bool expectedRunDataload)
 	{
 		var configRoot = GivenConfigurationRoot(true, true);
 		var expectedConfig = GivenConfiguration(expectedDbType, expectedConnectionString, expectedRunMigrations,
@@ -81,7 +81,6 @@ public class MigrationOptionsTest
 		Assert.Equal(expectedConfig.RunIdempotent, config!.RunIdempotent);
 		Assert.Equal(expectedConfig.RunMigrations, config!.RunMigrations);
 		Assert.Equal(expectedConfig.RunDataLoad, config!.RunDataLoad);
-
 	}
 
 
@@ -93,7 +92,7 @@ public class MigrationOptionsTest
 			connectionStrings.Add("ConnectionStrings:SqlServer", "SqlConnectionString");
 
 		if (includePostgresConnection)
-			connectionStrings.Add("ConnectionStrings:PostgreSQL", "PostgreSQLConnectionString");
+			connectionStrings.Add("ConnectionStrings:Postgres", "PostgresConnectionString");
 
 		return new ConfigurationBuilder()
 			.AddInMemoryCollection(connectionStrings)
