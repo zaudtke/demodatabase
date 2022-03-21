@@ -35,10 +35,10 @@ public class SqlDeployment : IDeployment
 				{
 					Output.Display($"{migrationResult.Error}");
 				}
-				
+
 				Output.Display("Deployment Scripts Successfully Deployed....");
 			}
-			
+
 			if (_deploymentConfiguration.RunIdempotent)
 			{
 				Output.Display("Running Idempotent Scripts....");
@@ -54,10 +54,10 @@ public class SqlDeployment : IDeployment
 				{
 					Output.Display($"{migrationResult.Error}");
 				}
-				
+
 				Output.Display("Idempotent Scripts Successfully Deployed....");
 			}
-			
+
 			if (_deploymentConfiguration.RunDataLoad)
 			{
 				Output.Display("Running Dataload Scripts....");
@@ -73,7 +73,7 @@ public class SqlDeployment : IDeployment
 				{
 					Output.Display($"{migrationResult.Error}");
 				}
-				
+
 				Output.Display("Dataload Scripts Successfully Deployed....");
 			}
 
