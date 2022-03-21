@@ -2,22 +2,22 @@
 
 namespace Demo.Database;
 
-public static class MigrationOptions
+public static class DeploymentOptions
 {
 	public static readonly IReadOnlyDictionary<string, string> ValidOptions = new Dictionary<string, string>
 	{
 		{"-h", "Show command line help."},
 		{"--help", "Show command line help."},
 		{"-?", "Show command line help."},
-		{"--sql", "Run the migrations against Sql Server."},
-		{"--psql", "Run the migrations against PostgreSQL."},
+		{"--sql", "Run the deployment against Sql Server."},
+		{"--psql", "Run the deployment against PostgreSQL."},
 		{"--migrate", "Run migration scripts."},
 		{"--idempotent", "Run idempotent scripts."},
 		{"--dataload", "Run data load scripts."},
 		{"--all", "Run all scripts (migrate, idempotent, dataload)."},
 	};
 
-	public static (Configuration? Configuration, List<string> Errors) BuildConfiguration(string[] arguments, IConfigurationRoot config)
+	public static (DeploymentConfiguration? Configuration, List<string> Errors) BuildConfiguration(string[] arguments, IConfigurationRoot config)
 	{
 		var help = false;
 		var sql = false;
@@ -77,7 +77,7 @@ public static class MigrationOptions
 			switch (sql, psql)
 			{
 				case (true, true):
-					errors.Add("Only 1 Database type can be migrated at at time.  Choose --sql or --psql.");
+					errors.Add("Only 1 Database type can be deployed at at time.  Choose --sql or --psql.");
 					connectionString = "<NotAbleToSet>";
 					break;
 				case (false, false):
@@ -103,7 +103,7 @@ public static class MigrationOptions
 		}
 
 		var database = new Database(dbType, connectionString);
-		var configuration = new Configuration(database, help, migrate, idempotent, dataload);
+		var configuration = new DeploymentConfiguration(database, help, migrate, idempotent, dataload);
 
 		return (configuration, errors); // errors will be empty list
 	}

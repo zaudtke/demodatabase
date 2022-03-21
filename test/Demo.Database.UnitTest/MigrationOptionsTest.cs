@@ -6,8 +6,8 @@ using Xunit;
 namespace Demo.Database.UnitTest;
 public class MigrationOptionsTest
 {
-	[Theory(DisplayName = "MigrationOptions.BuildConfiguration Returns Error List correctly based on invalid arguments")]
-	[InlineData(true, new string[] { "app.dll", "--sql", "--psql" }, new string[] { "Only 1 Database type can be migrated at at time.  Choose --sql or --psql." })]
+	[Theory(DisplayName = "DeploymentOptions.BuildConfiguration Returns Error List correctly based on invalid arguments")]
+	[InlineData(true, new string[] { "app.dll", "--sql", "--psql" }, new string[] { "Only 1 Database type can be deployed at at time.  Choose --sql or --psql." })]
 	[InlineData(true, new string[] { "app.dll", "--migrate" }, new string[] { "A Database type is required.  Choose --sql or --psql." })]
 	[InlineData(false, new string[] { "app.dll", "--sql" }, new string[] { "ConnectionStrings:SqlServer missing, please add to User Secrets." })]
 	[InlineData(false, new string[] { "app.dll", "--psql" }, new string[] { "ConnectionStrings:PostgreSQL missing, please add to User Secrets." })]
@@ -15,14 +15,14 @@ public class MigrationOptionsTest
 	public void MigrationOptions_BuildConfiguration_Returns_ListOfErrors_When_Invalid_Arguments_Passed_In(bool includeConnections, string[] args, string[] expected)
 	{
 		var configRoot = GivenConfigurationRoot(includeConnections, includeConnections);
-		var (config, errors) = MigrationOptions.BuildConfiguration(args, configRoot);
+		var (config, errors) = DeploymentOptions.BuildConfiguration(args, configRoot);
 
 		Assert.Null(config);
 		Assert.NotNull(errors);
 		Assert.Equal(expected.ToList(), errors);
 	}
 
-	[Theory(DisplayName = "MigrationOptions.BuildConfiguration Returns valid configuration with Help = True when valid Help option passed in.")]
+	[Theory(DisplayName = "DeploymentOptions.BuildConfiguration Returns valid configuration with Help = True when valid Help option passed in.")]
 	[InlineData("")]
 	[InlineData("executing/path/app.dll")]
 	[InlineData("executing/path/app.dll", "-?")]
@@ -37,7 +37,7 @@ public class MigrationOptionsTest
 	public void MigrationOptions_BuildConfiguration_Returns_ValidConfiguration_With_Help_True_When_Valid_HelpOption(params string[] args)
 	{
 		var configRoot = GivenConfigurationRoot(false, false);
-		var (config, errors) = MigrationOptions.BuildConfiguration(args, configRoot);
+		var (config, errors) = DeploymentOptions.BuildConfiguration(args, configRoot);
 
 		Assert.NotNull(config);
 		Assert.True(config!.Help); // ! means don't warn me about possible null.
@@ -45,7 +45,7 @@ public class MigrationOptionsTest
 		Assert.Empty(errors);
 	}
 
-	[Theory(DisplayName = "MigrationOptions.BuildConfiguration Returns valid configuration")]
+	[Theory(DisplayName = "DeploymentOptions.BuildConfiguration Returns valid configuration")]
 	[InlineData(new string[] { "app.dll", "--psql" }, 0, "PostgreSQLConnectionString", false, false, false)]
 	[InlineData(new string[] { "app.dll", "--psql", "--migrate" }, 0, "PostgreSQLConnectionString", true, false, false)]
 	[InlineData(new string[] { "app.dll", "--psql", "--idempotent" }, 0, "PostgreSQLConnectionString", false, true, false)]
@@ -69,7 +69,7 @@ public class MigrationOptionsTest
 		var configRoot = GivenConfigurationRoot(true, true);
 		var expectedConfig = GivenConfiguration(expectedDbType, expectedConnectionString, expectedRunMigrations,
 			expectedRunIdempotent, expectedRunDataload);
-		var (config, errors) = MigrationOptions.BuildConfiguration(args, configRoot);
+		var (config, errors) = DeploymentOptions.BuildConfiguration(args, configRoot);
 
 		Assert.NotNull(errors);
 		Assert.Empty(errors);
@@ -100,9 +100,9 @@ public class MigrationOptionsTest
 			.Build();
 	}
 
-	private static Configuration GivenConfiguration(int dbType, string connectionString, bool runMigrations, bool runIdempotent, bool runDataload)
+	private static DeploymentConfiguration GivenConfiguration(int dbType, string connectionString, bool runMigrations, bool runIdempotent, bool runDataload)
 	{
 		var database = new Database((DatabaseServerType)dbType, connectionString);
-		return new Configuration(database, false, runMigrations, runIdempotent, runDataload);
+		return new DeploymentConfiguration(database, false, runMigrations, runIdempotent, runDataload);
 	}
 }

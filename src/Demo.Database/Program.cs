@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 var arguments = Environment.GetCommandLineArgs();
 var configuration = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
-var migrationOptions = MigrationOptions.BuildConfiguration(arguments, configuration);
+var migrationOptions = DeploymentOptions.BuildConfiguration(arguments, configuration);
 
 return migrationOptions switch
 {

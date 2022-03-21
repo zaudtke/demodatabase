@@ -11,7 +11,7 @@ public interface IDeployment
 
 public static class Deployment
 {
-	public static IDeployment Build(Configuration config)
+	public static IDeployment Build(DeploymentConfiguration config)
 	{
 		return config.Database.Type switch
 		{

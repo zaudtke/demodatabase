@@ -5,11 +5,11 @@ namespace Demo.Database;
 
 public class SqlDeployment : IDeployment
 {
-	private readonly Configuration _configuration;
+	private readonly DeploymentConfiguration _deploymentConfiguration;
 
-	public SqlDeployment(Configuration configuration)
+	public SqlDeployment(DeploymentConfiguration deploymentConfiguration)
 	{
-		_configuration = configuration;
+		_deploymentConfiguration = deploymentConfiguration;
 	}
 	public int Run()
 	{
@@ -18,14 +18,14 @@ public class SqlDeployment : IDeployment
 		{
 			Output.Display("Ensuring Database Exists....");
 			EnsureDatabase.For
-				.SqlDatabase(_configuration.Database.ConnectionString);
+				.SqlDatabase(_deploymentConfiguration.Database.ConnectionString);
 			Output.Display("\r\nDatabaseExists.");
 
-			if (_configuration.RunMigrations)
+			if (_deploymentConfiguration.RunMigrations)
 			{
 				Output.Display("Running Deployment Scripts....");
 				var migrationEngine = DeployChanges.To
-					.SqlDatabase(_configuration.Database.ConnectionString)
+					.SqlDatabase(_deploymentConfiguration.Database.ConnectionString)
 					.WithScriptsFromFileSystem("../../../../scripts/sqlserver/migrations/")
 					.LogToConsole()
 					.Build();
@@ -39,11 +39,11 @@ public class SqlDeployment : IDeployment
 				Output.Display("Deployment Scripts Successfully Deployed....");
 			}
 			
-			if (_configuration.RunIdempotent)
+			if (_deploymentConfiguration.RunIdempotent)
 			{
 				Output.Display("Running Idempotent Scripts....");
 				var migrationEngine = DeployChanges.To
-					.SqlDatabase(_configuration.Database.ConnectionString)
+					.SqlDatabase(_deploymentConfiguration.Database.ConnectionString)
 					.WithScriptsFromFileSystem("../../../../scripts/sqlserver/idempotent/")
 					.LogToConsole()
 					.JournalTo(new NullJournal())
@@ -58,11 +58,11 @@ public class SqlDeployment : IDeployment
 				Output.Display("Idempotent Scripts Successfully Deployed....");
 			}
 			
-			if (_configuration.RunDataLoad)
+			if (_deploymentConfiguration.RunDataLoad)
 			{
 				Output.Display("Running Dataload Scripts....");
 				var migrationEngine = DeployChanges.To
-					.SqlDatabase(_configuration.Database.ConnectionString)
+					.SqlDatabase(_deploymentConfiguration.Database.ConnectionString)
 					.WithScriptsFromFileSystem("../../../../scripts/sqlserver/dataload/")
 					.LogToConsole()
 					.JournalTo(new NullJournal())

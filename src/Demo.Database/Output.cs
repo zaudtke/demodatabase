@@ -5,7 +5,7 @@ public static class Output
 	public static int DisplayHelp()
 	{
 		// Flip Key and Value to group aliases together based on Value aka Description
-		var output = MigrationOptions.ValidOptions.GroupBy(x => x.Value)
+		var output = DeploymentOptions.ValidOptions.GroupBy(x => x.Value)
 			.ToDictionary(x => x.Key, x => x.Select(i => i.Key).ToList());
 
 		Console.WriteLine("\r\nDescription:\r\n   Run Scripts to update Demo Database.\r\n\r\nOptions:");
