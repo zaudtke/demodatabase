@@ -4,11 +4,11 @@ using Microsoft.Extensions.Configuration;
 var arguments = Environment.GetCommandLineArgs();
 var configuration = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
-var migrationOptions = DeploymentOptions.BuildConfiguration(arguments, configuration);
+var deploymentOptions = DeploymentOptions.BuildConfiguration(arguments, configuration);
 
-return migrationOptions switch
+return deploymentOptions switch
 {
 	(null, var errors) => Output.DisplayConfigErrors(errors),
-	var (migrationConfig, _) when migrationConfig.Help => Output.DisplayHelp(),
-	var (migrationConfig, _) => Deployment.Build(migrationConfig).Run()
+	var (deploymentConfig, _) when deploymentConfig.Help => Output.DisplayHelp(),
+	var (deploymentConfig, _) => Deployment.Build(deploymentConfig).Run()
 };
