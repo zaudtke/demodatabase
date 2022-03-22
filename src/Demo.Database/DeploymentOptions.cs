@@ -48,10 +48,12 @@ public static class DeploymentOptions
 				case "--sql":
 					sql = true;
 					dbType = DatabaseServerType.SqlServer;
+					connectionString = config.GetConnectionString("SqlServer");
 					break;
 				case "--psql":
 					psql = true;
 					dbType = DatabaseServerType.Postgres;
+					connectionString = config.GetConnectionString("Postgres");
 					break;
 				case "--migrate":
 					migrate = true;
@@ -78,19 +80,15 @@ public static class DeploymentOptions
 			{
 				case (true, true):
 					errors.Add("Only 1 Database type can be deployed at at time.  Choose --sql or --psql.");
-					connectionString = "<NotAbleToSet>";
 					break;
 				case (false, false):
 					errors.Add("A Database type is required.  Choose --sql or --psql.");
-					connectionString = "<NotAbleToSet>";
 					break;
 				case (true, false):
-					connectionString = config.GetConnectionString("SqlServer");
 					if (string.IsNullOrEmpty(connectionString))
 						errors.Add("ConnectionStrings:SqlServer missing, please add to User Secrets.");
 					break;
 				case (false, true):
-					connectionString = config.GetConnectionString("Postgres");
 					if (string.IsNullOrEmpty(connectionString))
 						errors.Add("ConnectionStrings:Postgres missing, please add to User Secrets.");
 					break;
