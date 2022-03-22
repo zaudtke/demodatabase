@@ -11,8 +11,8 @@ public static class Deployment
 	{
 		return config.Database.Type switch
 		{
-			DatabaseServerType.Postgres => new SqlDeployment(config),
-			DatabaseServerType.SqlServer => new PostgresDeployment(config),
+			DatabaseServerType.Postgres => new PostgresDeployment(config),
+			DatabaseServerType.SqlServer => new SqlDeployment(config),
 			_ => throw new Exception("Invalid Database Server Type")
 		};
 	}
