@@ -1,0 +1,21 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": ".NET Core Launch (console)", 
+			"type": "coreclr", 
+			"request": "launch", 
+			"preLaunchTask": "build", 
+			"program": "${workspaceFolder}/src/Demo.Database/bin/Debug/net6.0/Demo.Database.dll", 
+			"args": [], 
+			"cwd": "${workspaceFolder}/src/Demo.Database", 
+			"console": "internalConsole", 
+			"stopAtEntry": false
+		}, 
+		{
+			"name": ".NET Core Attach", 
+			"type": "coreclr", 
+			"request": "attach"
+		}
+	]
+}

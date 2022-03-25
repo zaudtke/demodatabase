@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0A014388-870E-4F8F-A8B7-11B74E47EC90}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Database", "src\Demo.Database\Demo.Database.csproj", "{A50EA4A6-C0AF-448A-88B9-619922D279C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{2C936F6B-BF23-48A8-956D-9B55BEB86A6A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{812AD3FC-C9AE-4A35-9DEF-FAFAF21F3E82}"
+	ProjectSection(SolutionItems) = preProject
+		.config\dotnet-tools.json = .config\dotnet-tools.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{13E49BF1-BAF8-4235-922C-92E37B8B7461}"
+	ProjectSection(SolutionItems) = preProject
+		.vscode\launch.json = .vscode\launch.json
+		.vscode\settings.json = .vscode\settings.json
+		.vscode\tasks.json = .vscode\tasks.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{229951F8-B605-4D30-9A1F-902FBF972B34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Database.UnitTest", "test\Demo.Database.UnitTest\Demo.Database.UnitTest.csproj", "{9748B46B-C634-444D-A93D-0C73D8A061D4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A50EA4A6-C0AF-448A-88B9-619922D279C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A50EA4A6-C0AF-448A-88B9-619922D279C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A50EA4A6-C0AF-448A-88B9-619922D279C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A50EA4A6-C0AF-448A-88B9-619922D279C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9748B46B-C634-444D-A93D-0C73D8A061D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9748B46B-C634-444D-A93D-0C73D8A061D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9748B46B-C634-444D-A93D-0C73D8A061D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9748B46B-C634-444D-A93D-0C73D8A061D4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A50EA4A6-C0AF-448A-88B9-619922D279C1} = {0A014388-870E-4F8F-A8B7-11B74E47EC90}
+		{9748B46B-C634-444D-A93D-0C73D8A061D4} = {229951F8-B605-4D30-9A1F-902FBF972B34}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B277519A-364B-4E11-A201-1D9D75759BA1}
+	EndGlobalSection
+EndGlobal
